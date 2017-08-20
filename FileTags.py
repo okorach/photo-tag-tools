@@ -11,6 +11,8 @@ class UnknownTagError(TagError):
 
 class FileTags:
 
+    EXIF_SECTIONS = ("0th", "Exif", "GPS", "1st")  # To do, go through all possible exif_dict keys
+
     TAGS = {
         'Description': ('0th', 270),
         'Author': ('0th', 315),
@@ -24,7 +26,7 @@ class FileTags:
 
     def __init__(self, filename):
         self.filename = filename
-        self.flat_tags = []
+        self.flat_tags = {}
         self.exif_dict = {}
 
     def read(self):
@@ -37,7 +39,7 @@ class FileTags:
 
     def flatten_tags(self):
         self.flat_tags = []
-        for ifd in ("0th", "Exif", "GPS", "1st"):
+        for ifd in FileTags.EXIF_SECTIONS:
             for tag in self.exif_dict[ifd]:
                 data = self.exif_dict[ifd][tag]
                 if type(data) is bytes:
@@ -49,14 +51,16 @@ class FileTags:
                 self.flat_tags[piexif.TAGS[ifd][tag]["name"]] = data
 
     def get_tag(self, tag_name):
-        return self.exif_dict[FileTags.TAGS[tag_name][0]][FileTags.TAGS[tag_name][1]]
+        if tag_name in FileTags.TAGS.keys():
+            return self.exif_dict[FileTags.TAGS[tag_name][0]][FileTags.TAGS[tag_name][1]]
+        else:
+            raise UnknownTagError
 
     def set_tag(self, tag_name, tag_value):
         if tag_name in FileTags.TAGS.keys():
             self.exif_dict[FileTags.TAGS[tag_name][0]][FileTags.TAGS[tag_name][1]] = tag_value
         else:
             raise UnknownTagError
-
 
     def get_date_picture_taken(self):
         return self.get_tag('DateTime')
@@ -81,12 +85,19 @@ class FileTags:
 
     def get_tag_array(self):
         tag_array = []
-        for ifd in ("0th", "Exif", "GPS", "1st"): # To do, go through all possible exif_dict keys
+        for ifd in FileTags.EXIF_SECTIONS:
             tag_array.append(self.exif_dict[ifd].keys())
         return tag_array
 
     def get_tag_list(self):
         tag_dict = {}
-        for ifd in ("0th", "Exif", "GPS", "1st"):
+        for ifd in FileTags.EXIF_SECTIONS:
             for tag in self.exif_dict[ifd]:
                 tag_dict[piexif.TAGS[ifd][tag]["name"]] = 1
+        return tag_dict
+
+    def merge_tag_list(self, current_list):
+        for ifd in FileTags.EXIF_SECTIONS:
+            for tag in self.exif_dict[ifd]:
+                current_list[piexif.TAGS[ifd][tag]["name"]] = 1
+        return current_list
