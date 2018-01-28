@@ -1,8 +1,6 @@
 import piexif
 import os
 
-from os.path import join
-
 taglist = {}
 arraytags = []
 separator=";"
@@ -49,15 +47,15 @@ for root, dirs, files in os.walk(r'C:\Users\Olivier\Pictures'):
 
 
 print("Filename", end=separator)
-for tag in taglist:
-    print(tag, end=separator)
+for outtag in taglist:
+    print(outtag, end=separator)
     print("")
 
     for filetags in arraytags:
         print(filetags["filename"], end=separator)
-        for tag in taglist:
-            if tag in filetags.keys():
-                print(filetags[tag], end=separator)
-                else:
+        for intag in taglist:
+            if intag in filetags.keys():
+                print(filetags[intag], end=separator)
+            else:
                 print('', end=separator)
             print("")
