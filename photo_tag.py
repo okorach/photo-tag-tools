@@ -93,6 +93,7 @@ TAGLIST = {}
 for file in FILELIST:
     print("Treating File = ", file)
     tags = file_tags.FileTags(file)
+    tags.read()
     if ACTIONS['set_copyright']:
         print("Setting copyright", ACTIONS['set_copyright'], "in file", file)
         tags.set_copyright(ACTIONS['set_copyright'])

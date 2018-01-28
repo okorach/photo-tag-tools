@@ -76,6 +76,8 @@ class FileTags:
     def set_tag(self, tag_name, tag_value):
         """Sets a specific tag"""
         if tag_name in FileTags.TAGS.keys():
+            print("EXIF")
+            print(self.exif_dict)
             self.exif_dict[FileTags.TAGS[tag_name][0]][FileTags.TAGS[tag_name][1]] = tag_value
         else:
             raise UnknownTagError
