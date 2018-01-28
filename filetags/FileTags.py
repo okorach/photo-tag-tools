@@ -39,6 +39,7 @@ class FileTags:
 
     def flatten_tags(self):
         self.flat_tags = []
+        self.flat_tags['filename'] = self.filename
         for ifd in FileTags.EXIF_SECTIONS:
             for tag in self.exif_dict[ifd]:
                 data = self.exif_dict[ifd][tag]
@@ -49,6 +50,13 @@ class FileTags:
                     except UnicodeDecodeError:
                         pass
                 self.flat_tags[piexif.TAGS[ifd][tag]["name"]] = data
+
+    def get_flat_tags(self):
+        self.flatten_tags()
+        return self.flat_tags
+
+    def get_exif_tags(self):
+        return self.exif_dict
 
     def get_tag(self, tag_name):
         if tag_name in FileTags.TAGS.keys():
