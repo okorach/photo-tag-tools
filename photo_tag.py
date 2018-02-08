@@ -54,8 +54,8 @@ def parse_args():
     if args.keywords != "":
         actions['set_keywords'] = args.keywords
 
-    if args.taglist == "True":
-        actions['print_tags'] = True
+    # if args.taglist == "True":
+    actions['print_tags'] = (args.taglist == "True")
 
     #if args.dryrun == "False":
     #    apply_changes = True
@@ -94,6 +94,7 @@ for file in FILELIST:
     print("Treating File = ", file)
     tags = file_tags.FileTags(file)
     tags.read()
+    tags.print()
     if ACTIONS['set_copyright']:
         print("Setting copyright", ACTIONS['set_copyright'], "in file", file)
         tags.set_copyright(ACTIONS['set_copyright'])

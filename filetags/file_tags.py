@@ -18,7 +18,7 @@ class FileTags:
 
     TAGS = {
         'Description': ('0th', 270),
-        'Author': ('0th', 315),
+        'Artist': ('0th', 315),
         'DateTime': ('0th', 0),
         'Copyright': ('0th', 33432),
         'XPTitle': ('0th', 40091),
@@ -42,9 +42,15 @@ class FileTags:
             exif_bytes = piexif.dump(self.exif_dict)
             piexif.insert(exif_bytes, self.filename)
 
+    def print(self):
+        """Prints the tag object"""
+        self.flatten_tags()
+        print(self.flat_tags)
+
     def flatten_tags(self):
         """Builds a flat dict from the tags hierarchy"""
-        self.flat_tags = []
+        print("Flattening")
+        self.flat_tags = {}
         self.flat_tags['filename'] = self.filename
         for ifd in FileTags.EXIF_SECTIONS:
             for tag in self.exif_dict[ifd]:
@@ -75,10 +81,11 @@ class FileTags:
 
     def set_tag(self, tag_name, tag_value):
         """Sets a specific tag"""
+        print("Setting " + tag_name + " to value " + tag_value)
         if tag_name in FileTags.TAGS.keys():
-            print("EXIF")
             print(self.exif_dict)
             self.exif_dict[FileTags.TAGS[tag_name][0]][FileTags.TAGS[tag_name][1]] = tag_value
+            print(self.exif_dict)
         else:
             raise UnknownTagError
 
@@ -96,6 +103,7 @@ class FileTags:
 
     def set_author(self, author):
         """Sets the author"""
+        print("Setting author")
         return self.set_tag('Artist', author)
 
     def get_copyright(self):
